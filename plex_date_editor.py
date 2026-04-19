@@ -17,29 +17,29 @@ OLDEST_DATE = datetime.fromisoformat(CONFIG["dates"]["oldest"])
 TITLES = []
 
 
+def update_date(item, date):
+    date = max(date, OLDEST_DATE)
+    item.editField("addedAt", date, locked=False)
+    item.editField("updatedAt", date, locked=False)
+    print(f"Updated '{item.title}' with {date}")
+
+
 def update_movie(movie):
-    date = max(movie.originallyAvailableAt, OLDEST_DATE)
-    movie.editAddedAt(date, False)
-    print(f"Updated movie '{movie.title}' with {date}")
+    update_date(movie, movie.originallyAvailableAt)
 
 
 def update_show(show):
     for episode in show.episodes():
-        date = max(episode.originallyAvailableAt, OLDEST_DATE)
-
         if episode.index == 1 and episode.parentIndex == 1:
             # update the show to use the date of the first episode
-            show.editAddedAt(date, False)
-            print(f"Updated show '{show.title}' with {date}")
+            update_date(show, episode.originallyAvailableAt)
 
         if episode.index == 1:
             # update the season to use the date of the first episode in the season
             season = show.season(season=episode.parentIndex)
-            season.editAddedAt(date, False)
-            print(f"Updated season '{season.title}' with {date}")
+            update_date(season, episode.originallyAvailableAt)
 
-        episode.editAddedAt(date, False)
-        print(f"Updated episode '{episode.title}' with {date}")
+        update_date(episode, episode.originallyAvailableAt)
 
 
 def get_items(plex_server):
