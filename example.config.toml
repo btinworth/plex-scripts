@@ -1,0 +1,6 @@
+[plex]
+token = "abc123" # plex server token
+url = "http://localhost:32400" # url of your plex server
+
+[dates]
+oldest = "1970-01-01" # prevent setting dates before this
