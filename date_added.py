@@ -6,19 +6,16 @@ updating the dates accordingly.
 
 from datetime import datetime
 
-import toml
-from plexapi.server import PlexServer
+import helpers
 
-CONFIG = toml.load("config.toml")
-PLEX_URL = CONFIG["plex"]["url"]
-PLEX_TOKEN = CONFIG["plex"]["token"]
-OLDEST_DATE = datetime.fromisoformat(CONFIG["dates"]["oldest"])
-
-TITLES = []
+def get_oldest_date():
+    config = helpers.get_config()
+    oldest_date_str = config["dates"]["oldest"]
+    return datetime.fromisoformat(oldest_date_str)
 
 
 def update_date(item, date):
-    date = max(date, OLDEST_DATE)
+    date = max(date, get_oldest_date())
     item.editField("addedAt", date, locked=False)
     item.editField("updatedAt", date, locked=False)
     print(f"Updated '{item.title}' with {date}")
@@ -42,20 +39,10 @@ def update_show(show):
         update_date(episode, episode.originallyAvailableAt)
 
 
-def get_items(plex_server):
-    items = []
-
-    for library in plex_server.library.sections():
-        for title in TITLES:
-            items.extend(library.search(title))
-
-    return items
-
-
 def main():
-    plex_server = PlexServer(PLEX_URL, PLEX_TOKEN)
+    plex_server = helpers.get_plex_server()
 
-    for item in get_items(plex_server):
+    for item in helpers.get_media(plex_server):
         if item.type == "movie":
             update_movie(item)
         elif item.type == "show":

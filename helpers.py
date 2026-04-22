@@ -30,7 +30,8 @@ def get_media(plex_server):
     for library in plex_server.library.sections():
         if use_filter:
             for title in media_filter:
-                items.extend(library.search(title))
+                titles = [x for x in library.search(title) if x.title.casefold() == title.casefold()]
+                items.extend(titles)
         else:
             items.extend(library.all())
 
