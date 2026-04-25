@@ -8,17 +8,18 @@ from datetime import datetime
 
 import helpers
 
+
 def get_oldest_date():
     config = helpers.get_config()
     oldest_date_str = config["dates"]["oldest"]
     return datetime.fromisoformat(oldest_date_str)
 
 
-def update_date(item, date):
+def update_date(item, date, name=""):
     date = max(date, get_oldest_date())
     item.editField("addedAt", date, locked=False)
     item.editField("updatedAt", date, locked=False)
-    print(f"Updated '{item.title}' with {date}")
+    print(f"Updated '{name if name else item.title}' with {date}")
 
 
 def update_movie(movie):
@@ -29,14 +30,14 @@ def update_show(show):
     for episode in show.episodes():
         if episode.index == 1 and episode.parentIndex == 1:
             # update the show to use the date of the first episode
-            update_date(show, episode.originallyAvailableAt)
+            update_date(show, episode.originallyAvailableAt, f"{show.title}")
 
         if episode.index == 1:
             # update the season to use the date of the first episode in the season
             season = show.season(season=episode.parentIndex)
-            update_date(season, episode.originallyAvailableAt)
+            update_date(season, episode.originallyAvailableAt, f"{show.title} (Season {episode.parentIndex})")
 
-        update_date(episode, episode.originallyAvailableAt)
+        update_date(episode, episode.originallyAvailableAt, f"{show.title} (S{episode.parentIndex:02}E{episode.index:02}) - {episode.title}")
 
 
 def main():
