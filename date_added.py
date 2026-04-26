@@ -16,9 +16,9 @@ def get_oldest_date():
 
 
 def update_date(item, date, name=""):
-    date = max(date, get_oldest_date())
-    item.editField("addedAt", date, locked=False)
-    item.editField("updatedAt", date, locked=False)
+    date = min(max(date, get_oldest_date()), datetime.now())
+    item.editField("addedAt", date.date(), locked=False)
+    item.editField("updatedAt", date.date(), locked=False)
     print(f"Updated '{name if name else item.title}' with {date}")
 
 
