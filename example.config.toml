@@ -6,5 +6,7 @@ url = "http://localhost:32400" # url of your plex server
 oldest = "1970-01-01" # prevent setting dates before this
 
 [media]
-filter_use = true # whether to filter media by title
-filter = [] # list of strings to filter media titles by
+use_library_filter = true # whether to filter media by library
+library_filter = ["Movies", "TV Shows"] # list of libraries to filter (ignored if use_library_filter is false)
+use_media_filter = true # whether to filter media by title
+media_filter = [] # list of media titles to filter (ignored if use_media_filter is false)
