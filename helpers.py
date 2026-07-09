@@ -2,8 +2,14 @@
 Helper functions.
 """
 
+import time
+
 import toml
 from plexapi.server import PlexServer
+from requests.exceptions import RequestException
+
+SERVER_RETRIES = 5
+SERVER_RETRY_DELAY = 5
 
 
 def get_config():
@@ -16,7 +22,15 @@ def get_plex_server():
     plex_url = config["plex"]["url"]
     plex_token = config["plex"]["token"]
 
-    return PlexServer(plex_url, plex_token)
+    for attempt in range(1, SERVER_RETRIES + 1):
+        try:
+            return PlexServer(plex_url, plex_token)
+        except RequestException as _error:
+            if attempt == SERVER_RETRIES:
+                raise
+
+            print(f"Failed to connect to server, retrying in {SERVER_RETRY_DELAY}s...")
+            time.sleep(SERVER_RETRY_DELAY)
 
 
 def get_libraries(plex_server):
