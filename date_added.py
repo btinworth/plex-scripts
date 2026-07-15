@@ -16,6 +16,10 @@ def get_oldest_date():
 
 
 def update_date(item, date, name=""):
+    if not date:
+        print(f"Skipping '{name if name else item.title}' because it has no date")
+        return
+
     date = min(max(date, get_oldest_date()), datetime.now())
     item.editField("addedAt", date.date(), locked=False)
     item.editField("updatedAt", date.date(), locked=False)
