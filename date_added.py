@@ -12,7 +12,7 @@ import helpers
 def get_oldest_date():
     config = helpers.get_config()
     oldest_date_str = config["dates"]["oldest"]
-    return datetime.fromisoformat(oldest_date_str)
+    return datetime.fromisoformat(oldest_date_str).astimezone()
 
 
 def update_date(item, date, name=""):
@@ -20,7 +20,7 @@ def update_date(item, date, name=""):
         print(f"Skipping '{name if name else item.title}' because it has no date")
         return
 
-    date = min(max(date, get_oldest_date()), datetime.now())
+    date = min(max(date.astimezone(), get_oldest_date()), datetime.now().astimezone())
     item.editField("addedAt", date.date(), locked=False)
     item.editField("updatedAt", date.date(), locked=False)
     print(f"Updated '{name if name else item.title}' with {date}")
