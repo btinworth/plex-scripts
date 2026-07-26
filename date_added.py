@@ -29,6 +29,12 @@ def update_date(item, date, name=""):
 def update_movie(movie):
     update_date(movie, movie.originallyAvailableAt)
 
+    if movie.collections:
+        for collection in movie.collections:
+            added_at = collection.addedAt
+            date = min(added_at, movie.originallyAvailableAt)
+            update_date(collection.collection(), date)
+
 
 def update_show(show):
     for episode in show.episodes():
