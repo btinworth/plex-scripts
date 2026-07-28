@@ -26,14 +26,23 @@ def update_date(item, date, name=""):
     print(f"Updated '{name if name else item.title}' with {date}")
 
 
-def update_movie(movie):
+def update_movie(movie, collections=None):
     update_date(movie, movie.originallyAvailableAt)
 
-    if movie.collections:
+    if collections is not None:
         for collection in movie.collections:
-            added_at = collection.addedAt
-            date = min(added_at, movie.originallyAvailableAt)
-            update_date(collection.collection(), date)
+            collections.setdefault(collection.tag, collection)
+
+
+def update_collection(collection_tag):
+    collection = collection_tag.collection()
+    dates = [item.originallyAvailableAt for item in collection.items() if item.originallyAvailableAt]
+
+    if not dates:
+        print(f"Skipping '{collection.title}' because it has no dated items")
+        return
+
+    update_date(collection, min(dates))
 
 
 def update_show(show):
@@ -52,12 +61,16 @@ def update_show(show):
 
 def main():
     plex_server = helpers.get_plex_server()
+    collections = {}
 
     for item in helpers.get_media(plex_server):
         if item.type == "movie":
-            update_movie(item)
+            update_movie(item, collections)
         elif item.type == "show":
             update_show(item)
+
+    for collection_tag in collections.values():
+        update_collection(collection_tag)
 
 
 if __name__ == "__main__":
