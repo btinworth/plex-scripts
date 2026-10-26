@@ -57,6 +57,9 @@ def get_media(plex_server):
     use_media_filter = config["media"]["use_media_filter"]
     media_filter = config["media"]["media_filter"]
 
+    if use_media_filter and not media_filter:
+        raise ValueError("Media title filtering is enabled, but media_filter is empty. Add titles to config.toml or set use_media_filter to false to process all media.")
+
     items = []
 
     for library in get_libraries(plex_server):
