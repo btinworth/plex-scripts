@@ -21,6 +21,17 @@ def update_date(item, date, name=""):
         return
 
     date = min(max(date.astimezone(), get_oldest_date()), datetime.now().astimezone())
+    added_at = getattr(item, "addedAt", None)
+    updated_at = getattr(item, "updatedAt", None)
+    if (
+        added_at is not None
+        and updated_at is not None
+        and added_at.date() == date.date()
+        and updated_at.date() == date.date()
+    ):
+        print(f"Skipping '{name if name else item.title}' because its dates already match {date.date()}")
+        return
+
     item.editField("addedAt", date.date(), locked=False)
     item.editField("updatedAt", date.date(), locked=False)
     print(f"Updated '{name if name else item.title}' with {date}")
