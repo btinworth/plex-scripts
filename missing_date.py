@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 This script prints all Plex items without an originallyAvailableAt date
 Anything that is missing this date will be skipped when running the date_added.py script

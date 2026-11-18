@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 Refreshes artwork for movies, shows and seasons
 This includes posters, backgrounds, logos, and square art

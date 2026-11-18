@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 This script updates the "Added At" date of movies and TV shows in a Plex library to match their "Originally Available At" date.
 It connects to a Plex server using the provided URL and token, then iterates through the specified titles in the library,
